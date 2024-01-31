@@ -60,7 +60,9 @@ def create_chord_lyrics_list(lines):
     for i in range (0, length-1, 2):
 
         chord_line = lines[i].strip()
-        # TODO: Instrument some sort of checking to mak sure it's the
+        # TODO: Instrument some sort of checking to make sure it's the chord line
+
+        
         #lyrics line
         
         lyric_line = lines[i+1].strip()
