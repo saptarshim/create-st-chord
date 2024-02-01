@@ -1,5 +1,8 @@
-D             F#m        Em            D    A
 Shei je holud pakhi bose jamrul gacher dale
+D             F#m        Em            D    A
+
+Shei je holud pakhi bose jamrul gacher dale
+#this is a comment
 D         F#m         Em        D    A
 Korto dakadaki amar   soisober   shokale
 D             F#m        Em            D    A

@@ -1,7 +1,7 @@
 
 def create_chord_list(chord_line):
-    valid_chord_char = ['A', 'B', 'C', 'D', 'E', 'F', 'G', '#','b', 'm', '7']
-    valid_chord_modifier = ['#','b', 'm', '7']
+    valid_chord_char = ['A', 'B', 'C', 'D', 'E', 'F', 'G', '#','b', 'm', '7','M']
+    valid_chord_modifier = ['#','b', 'm', '7','M']
 
     chord_list = [[]]
     chord_list_count = 0
@@ -52,17 +52,36 @@ def create_ST_lyrics_line_from_list(chord_list, lyrics_line):
     return combined_chord_lyrics
 
 
+def check_if_this_chord_line(line):
+    valid_chord_char = ['A', 'B', 'C', 'D', 'E', 'F', 'G', '#','b', 'm', '7', 'M']
+    
+    valid = False
+
+    for index, char in enumerate(line):
+        #print("Index=", index)
+        if char == ' ':
+            continue
+
+        if char in valid_chord_char:
+            valid = True
+        else:
+            valid = False
+            break
+
+    return valid
+
 def create_chord_lyrics_list(lines):
     chord_and_lyric_list = [[]]
 
     length = len(lines)
 
     for i in range (0, length-1, 2):
-
         chord_line = lines[i].strip()
         # TODO: Instrument some sort of checking to make sure it's the chord line
+        if not check_if_this_chord_line(chord_line):
+            print("This is not a chord line")
+            continue
 
-        
         #lyrics line
         
         lyric_line = lines[i+1].strip()
@@ -85,42 +104,104 @@ def get_st_chord(chord_and_lyric_list):
 
     return st_lyric_list
 
-input_file = 'input.txt'
-output_file = 'output.txt'
-try:
-    # Read text from the input file
-    with open(input_file, 'r') as file:
-        lines = file.readlines()
-        #print(type(lines))
+def preproces_each_line(lines):
+    
+    #Line that starts with # will be simply copied back to the output without any change 
+    
+    #line_info is a list that has the following element
+    # [0]: Line Number
+    # [1]: Line type; C: Chord; L:Lyrics; B:Blank; H:Comment
+    # [2]: Line from the input file
+
+    # The list processedlines will contain line_info for each line item present in the input file
+      
+    processedlines = [[]]
+
+    length = len(lines)
+
+    for i in range (0, length-1, 1):
+        line = lines[i].strip()
         
-except FileNotFoundError:
-    print("Error: Input file not found.")
-except Exception as e:
-    print("An error occurred:", str(e))
+        
+        if len(line) == 0:
+            #Check if this is a blank line
+            line_info = [i,'B','\n']
+        elif line[0] == '#':
+            #Check if this is a comment line
+            line_info = [i,'H',line]
+        elif check_if_this_chord_line(line):
+            #Check if this is a chord line
+            line_info = [i,'C',line]
+        else:
+            #This must be a lyrics line
+            line_info = [i,'L',line]
+            
+        processedlines.append(line_info)
 
-#first_line = lines[0]
-#second_line = lines[1]
-#print(first_line)
-#print(second_line)
-#mylist = create_chord_list(first_line)
-#print(mylist)
-#st_chord = create_ST_lyrics_line_from_list(mylist,second_line)
-#print(st_chord)
-chord_and_lyric_list = create_chord_lyrics_list(lines)
-#print(chord_and_lyric_list)
-st_chord = get_st_chord(chord_and_lyric_list)
-#print(st_chord)
+    processedlines = processedlines[1:]
+    return processedlines    
 
-try:
-    output = open(output_file, 'w')
 
-    for line in st_chord:
-        nline = line
-        output.write(line)
-        print(line)
-        output.write("\n")
+def get_lines():
+    input_file = 'input.txt'
+    output_file = 'output.txt'
+    try:
+        # Read text from the input file
+        with open(input_file, 'r') as file:
+            lines = file.readlines()
+            
+    except FileNotFoundError:
+        print("Error: Input file not found.")
+    except Exception as e:
+        print("An error occurred:", str(e))
 
-except FileNotFoundError:
-    print("Error: Output file not found.")
-except Exception as e:
-    print("While writing An error occurred:", str(e))
+    return lines
+
+def test_all():
+    lines = get_lines()
+    chord_and_lyric_list = create_chord_lyrics_list(lines)
+    st_chord = get_st_chord(chord_and_lyric_list)
+
+    try:
+        output = open(output_file, 'w')
+
+        for line in st_chord:
+            nline = line
+            output.write(line)
+            print(line)
+            output.write("\n")
+
+    except FileNotFoundError:
+        print("Error: Output file not found.")
+    except Exception as e:
+        print("While writing An error occurred:", str(e))
+
+
+def test_line_char():
+    
+    lines = get_lines()
+    
+    line1 = lines[0].strip()
+    line2 = lines[1].strip()
+
+    #print("Line 2= ", line1, "\nLine 2 =", line2)
+    if check_if_this_chord_line(line1):
+        print("Line-1 is Chord Line")
+    else:
+        print("Line-1 is Lyrics Line")    
+
+    if check_if_this_chord_line(line2):
+        print("Line-2 is Chord Line")
+    else:
+        print("Line-2 is Lyrics Line")    
+
+
+
+def test_line_processing():
+    preproces_each_line(get_lines())
+
+
+#test_line_char()
+#test_all()
+
+test_line_processing()
