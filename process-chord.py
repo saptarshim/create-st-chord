@@ -70,14 +70,15 @@ def check_if_this_chord_line(line):
 
     return valid
 
-def create_chord_lyrics_list(lines):
+def create_chord_lyrics_list(processed_lines):
+    
+    #Do we still need this function
     chord_and_lyric_list = [[]]
 
     length = len(lines)
 
     for i in range (0, length-1, 2):
-        chord_line = lines[i].strip()
-        # TODO: Instrument some sort of checking to make sure it's the chord line
+        each_line = processed_lines[i]
         if not check_if_this_chord_line(chord_line):
             print("This is not a chord line")
             continue
@@ -92,14 +93,73 @@ def create_chord_lyrics_list(lines):
     return chord_and_lyric_list
 
 
-def get_st_chord(chord_and_lyric_list):
+def get_st_chord(processed_lines):
     st_lyric_list = []
  
-    for info in chord_and_lyric_list:
-        chord_line = info[0]
-        lyric_line = info[1]
-        mylist = create_chord_list(chord_line)
-        st_chord = create_ST_lyrics_line_from_list(mylist,lyric_line)
+    # By default we will assume the input file has chord followed by lyrincs line
+    chord_detected = False
+    lyrics_detected = False
+    chord_first = True
+
+    # Find out the structure of the input, Does it start with Chord or Lyrics 
+
+    for info in processed_lines:
+        if info[1] == 'B' or info[1] == 'H':
+            #this is a blank or comment line so simply add it to the output
+            continue
+        elif info[1] == 'C':
+            if lyrics_detected == False:
+                chord_first = True
+            else:
+                chord_first = False
+            break         
+        elif info[1] == 'L':
+            if chord_detected == False:
+                chord_first = False
+            else:
+                chord_first = True
+        break
+
+
+    processs_line_length = len(processed_lines)
+
+    for index, info in enumerate(processed_lines):
+        nop_line = False
+        if info[1] == 'B' or info[1] == 'H':
+            #this is a blank or comment line so simply add it to the output
+            st_chord = info[2]
+            nop_line = True
+        elif info[1] == 'C':
+            if chord_first:
+                chord_line = info[2]
+                #This shpould not happen but just in case
+                if index + 1 < processs_line_length:
+                    next_info = processed_lines[index + 1]
+                    if next_info[1] == 'L':
+                        lyric_line = next_info[2]
+                    else:
+                        print("We have a blank line after chord line bad")
+            else:
+                continue                                    
+        elif info[1] == 'L':
+            if not chord_first:
+                lyric_line = info[2]
+                #This shpould not happen but just in case
+                if index + 1 < processs_line_length:
+                    next_info = processed_lines[index + 1]
+                    if next_info[1] == 'C':
+                        chord_line = next_info[2]
+                    else:
+                        print("We have a blank line after lyrics line bad")
+            else:
+                continue
+        else:
+            print("This is bad, should not happen")
+                
+        if not nop_line:
+            mylist = create_chord_list(chord_line)
+            st_chord = create_ST_lyrics_line_from_list(mylist,lyric_line)
+        
         st_lyric_list.append(st_chord)
 
     return st_lyric_list
@@ -144,7 +204,6 @@ def preproces_each_line(lines):
 
 def get_lines():
     input_file = 'input.txt'
-    output_file = 'output.txt'
     try:
         # Read text from the input file
         with open(input_file, 'r') as file:
@@ -157,16 +216,12 @@ def get_lines():
 
     return lines
 
-def test_all():
-    lines = get_lines()
-    chord_and_lyric_list = create_chord_lyrics_list(lines)
-    st_chord = get_st_chord(chord_and_lyric_list)
-
+def write_lines(lines):
+    output_file = 'output.txt'
     try:
         output = open(output_file, 'w')
 
-        for line in st_chord:
-            nline = line
+        for line in lines:
             output.write(line)
             print(line)
             output.write("\n")
@@ -177,6 +232,17 @@ def test_all():
         print("While writing An error occurred:", str(e))
 
 
+
+def test_all():
+    lines = get_lines()
+    
+    processed_lines = preproces_each_line(lines)
+
+    #chord_and_lyric_list = create_chord_lyrics_list(processed_lines)
+    
+    st_chord = get_st_chord(processed_lines)
+    write_lines(st_chord)
+    
 def test_line_char():
     
     lines = get_lines()
@@ -200,8 +266,7 @@ def test_line_char():
 def test_line_processing():
     preproces_each_line(get_lines())
 
-
+#test_line_processing()
 #test_line_char()
-#test_all()
+test_all()
 
-test_line_processing()
