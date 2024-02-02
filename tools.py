@@ -28,6 +28,20 @@
 
 from global_def import VALID_CHORD_CHAR, VALID_CHORD_MODIFIER, LINE_STATE
 
+# Define a custom exception class
+class CustomError(Exception):
+    def __init__(self, message="A custom error occurred"):
+        self.message = message
+        super().__init__(self.message)
+
+# Function that raises the custom exception
+def error_function(value):
+    if value < 0:
+        raise CustomError("Value should be non-negative")
+    
+
+
+
 
 def chord_or_lyric_first(processed_lines):
     chord_detected = False
@@ -95,7 +109,7 @@ def check_if_this_chord_line(line):
         if char == ' ':
             continue
 
-        if char in VALID_CHORD_CHAR:
+        if (char in VALID_CHORD_CHAR) or (char in VALID_CHORD_MODIFIER):
             valid = True
         else:
             valid = False
@@ -119,7 +133,7 @@ def preproces_each_line(lines):
 
     length = len(lines)
 
-    for i in range (0, length-1, 1):
+    for i in range (0, length, 1):
         line = lines[i].strip()
         
         if len(line) == 0:
@@ -137,6 +151,7 @@ def preproces_each_line(lines):
             
         processedlines.append(line_info)
 
+    # Remove the first empty list item, This is doesn't hapen if it's a simple list
     processedlines = processedlines[1:]
     return processedlines    
 
@@ -149,10 +164,10 @@ def create_chord_list(chord_line):
 
     for index, char in enumerate(chord_line):
         #print("Index=", index)
-        if char in VALID_CHORD_CHAR:
+        if (char in VALID_CHORD_CHAR) or (char in VALID_CHORD_MODIFIER):
 
             #If this is a chord modifier treat differntly
-            if char in VALID_CHORD_CHAR:
+            if char in VALID_CHORD_MODIFIER:
                 #chord modifier can only happen after a valid Capital chord character 
                 info = chord_list [chord_list_count]
                 str = info[1]
@@ -166,6 +181,7 @@ def create_chord_list(chord_line):
     
     chord_list = chord_list[1:]
     return chord_list
+
 
 
 def create_ST_lyrics_line_from_list(chord_list, lyrics_line):
@@ -197,7 +213,7 @@ def get_next_line_index(index_after, processed_lines, line_state):
 
     #TODO:Validate input parameters
     
-    if line_state not in LINE_STATE:
+    if line_state not in LINE_STATE.values():
         print("Invalid line State supplied")
         return
 
@@ -208,4 +224,9 @@ def get_next_line_index(index_after, processed_lines, line_state):
                 return info, index + 1
             elif info[1] == line_state:
                 return info, index + 1
-        
+    
+    # This will only hapne if a valid next line index can't be found in the above for loop
+    # Calling function must explicity check the is None for invalid return
+    return None, None
+
+

@@ -46,21 +46,28 @@ def get_st_chord_statemachine(processed_lines, chord_first):
                 chord_line = info[2]
                 if chord_first == True:
                     lyric_info, next_index = get_next_line_index(index+1, processed_lines, LINE_STATE['LYRIC'])
-                    lyric_line = lyric_info[2]
-
-                    mylist = create_chord_list(chord_line)
-                    st_chord = create_ST_lyrics_line_from_list(mylist,lyric_line)    
-                current_state = LINE_STATE['EXIT']
+                    
+                    if lyric_info != None or next_index != None:
+                        lyric_line = lyric_info[2]
+                        mylist = create_chord_list(chord_line)
+                        st_chord = create_ST_lyrics_line_from_list(mylist,lyric_line)
+                    else:
+                        print("Somethinh went Wrong while fethching next line")
+                    
+                    current_state = LINE_STATE['EXIT']
                 
             elif current_state == LINE_STATE['LYRIC']:
                 lyric_line = info[2]
                 if chord_first == False:
                     chord_info, next_index = get_next_line_index(index+1, processed_lines, LINE_STATE['CHORD'])
-                    chord_line = lyric_info[2]
-                    mylist = create_chord_list(chord_line)
-                    st_chord = create_ST_lyrics_line_from_list(mylist,lyric_line)
-                
-                current_state = LINE_STATE['EXIT']
+                    if lyric_info != None or next_index != None:
+                        chord_info = lyric_info[2]
+                        mylist = create_chord_list(chord_line)
+                        st_chord = create_ST_lyrics_line_from_list(mylist,lyric_line)
+                    else:
+                        print("Somethinh went Wrong while fethching next line")
+                        
+                    current_state = LINE_STATE['EXIT']
                 
             elif current_state == LINE_STATE['BLANK']:
                 st_chord = '\n'
@@ -79,7 +86,19 @@ def get_st_chord_statemachine(processed_lines, chord_first):
 
     return st_lyric_list
 
+def test_get_next_line_index():
+    
+    input_file = 'input.txt'
+    output_file = 'output.txt' 
+    
+    lines = get_lines(input_file)
+    processed_lines = preproces_each_line(lines)
 
+    for index, info in enumerate(processed_lines):
+        new_info, next_index = get_next_line_index(index+1, processed_lines, LINE_STATE['ANY'])
+        print("Index = ", next_index, "\n", new_info)
+
+    
 def test():
     input_file = 'input.txt'
     output_file = 'output.txt' 
@@ -92,7 +111,5 @@ def test():
     #print(st_chord)
     write_lines(st_chord, output_file)
 
-
-
-
 test()
+#test_get_next_line_index()

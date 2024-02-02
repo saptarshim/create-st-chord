@@ -22,8 +22,8 @@
 
 
 
-VALID_CHORD_CHAR = ['A', 'B', 'C', 'D', 'E', 'F', 'G', '#','b', 'm', '7','M']
-VALID_CHORD_MODIFIER = ['#','b', 'm', '7','M']
+VALID_CHORD_CHAR = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+VALID_CHORD_MODIFIER = ['#','b', 'm', '7','M','s','u','s','4','1','1']
 
 LINE_STATE = {
         'INIT'      : 0,
