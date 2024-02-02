@@ -19,17 +19,3 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-
-
-
-VALID_CHORD_CHAR = ['A', 'B', 'C', 'D', 'E', 'F', 'G', '#','b', 'm', '7','M']
-VALID_CHORD_MODIFIER = ['#','b', 'm', '7','M']
-
-LINE_STATE = {
-        'INIT'      : 0,
-        'CHORD'     : 1,
-        'LYRIC'     : 2,
-        'BLANK'     : 3,
-        'COMMENT'   : 4,
-        'EXIT'      : 5 
-         }
