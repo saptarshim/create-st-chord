@@ -19,3 +19,193 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+
+# TODO:
+#   1.Write Test for each function to make sure they are solid
+
+
+
+from global_def import VALID_CHORD_CHAR, VALID_CHORD_MODIFIER, LINE_STATE
+
+
+def chord_or_lyric_first(processed_lines):
+    chord_detected = False
+    lyrics_detected = False
+    chord_first = True
+
+    # Find out the structure of the input, Does it start with Chord or Lyrics 
+
+    for info in processed_lines:
+        if info[1] == LINE_STATE['BLANK'] or info[1] == LINE_STATE['COMMENT']:
+            #this is a blank or comment line so simply add it to the output
+            continue
+        elif info[1] == LINE_STATE['CHORD']:
+            if lyrics_detected == False:
+                chord_first = True
+            else:
+                chord_first = False
+            break         
+        elif info[1] == LINE_STATE['LYRIC']:
+            if chord_detected == False:
+                chord_first = False
+            else:
+                chord_first = True
+        break
+
+    return chord_first
+
+
+def get_lines(input_file_txt):
+    input_file = input_file_txt
+    try:
+        # Read text from the input file
+        with open(input_file, 'r') as file:
+            lines = file.readlines()
+            
+    except FileNotFoundError:
+        print("Error: Input file not found.")
+    except Exception as e:
+        print("An error occurred:", str(e))
+
+    return lines
+
+def write_lines(lines, output_file_txt):
+    output_file = output_file_txt
+    try:
+        output = open(output_file, 'w')
+
+        for line in lines:
+            output.write(line)
+            #print(line)
+            output.write("\n")
+
+    except FileNotFoundError:
+        print("Error: Output file not found.")
+    except Exception as e:
+        print("While writing An error occurred:", str(e))
+
+
+def check_if_this_chord_line(line):
+    
+    valid = False
+
+    for index, char in enumerate(line):
+        #print("Index=", index)
+        if char == ' ':
+            continue
+
+        if char in VALID_CHORD_CHAR:
+            valid = True
+        else:
+            valid = False
+            break
+
+    return valid
+
+
+def preproces_each_line(lines):
+    
+    #Line that starts with # will be simply copied back to the output without any change 
+    
+    #line_info is a list that has the following element
+    # [0]: Line Number
+    # [1]: Line type; C: Chord; L:Lyrics; B:Blank; H:Comment
+    # [2]: Line from the input file
+
+    # The list processedlines will contain line_info for each line item present in the input file
+      
+    processedlines = [[]]
+
+    length = len(lines)
+
+    for i in range (0, length-1, 1):
+        line = lines[i].strip()
+        
+        if len(line) == 0:
+            #Check if this is a blank line
+            line_info = [i,LINE_STATE['BLANK'],'\n']
+        elif line[0] == '#':
+            #Check if this is a comment line
+            line_info = [i,LINE_STATE['COMMENT'],line]
+        elif check_if_this_chord_line(line):
+            #Check if this is a chord line
+            line_info = [i,LINE_STATE['CHORD'],line]
+        else:
+            #This must be a lyrics line
+            line_info = [i,LINE_STATE['LYRIC'],line]
+            
+        processedlines.append(line_info)
+
+    processedlines = processedlines[1:]
+    return processedlines    
+
+
+
+def create_chord_list(chord_line):
+
+    chord_list = [[]]
+    chord_list_count = 0
+
+    for index, char in enumerate(chord_line):
+        #print("Index=", index)
+        if char in VALID_CHORD_CHAR:
+
+            #If this is a chord modifier treat differntly
+            if char in VALID_CHORD_CHAR:
+                #chord modifier can only happen after a valid Capital chord character 
+                info = chord_list [chord_list_count]
+                str = info[1]
+                str = str + char
+                new_info = [info[0], str]
+                chord_list [chord_list_count] = new_info    
+            else:
+                chord_info = [index, char]
+                chord_list.append(chord_info)
+                chord_list_count += 1
+    
+    chord_list = chord_list[1:]
+    return chord_list
+
+
+def create_ST_lyrics_line_from_list(chord_list, lyrics_line):
+    combined_chord_lyrics = ''
+    lyrics_start_index = 0
+
+    length = len(chord_list) - 1
+    for i in range(length):
+        thisChord = chord_list[i]
+        nextChord = chord_list[i+1]
+        chord_val = thisChord[1]
+        lyrics_start_index = thisChord[0]
+        lyrics_end_index = nextChord[0]
+        line_to_add = lyrics_line[lyrics_start_index:lyrics_end_index]
+        combined_chord_lyrics = combined_chord_lyrics + "[" + chord_val + "]"+ line_to_add
+        #After the last chord add the reaming lyrins at the end of the line 
+        if i == (length - 1):
+            #This is the last iteration
+            lyrics_len = len(lyrics_line)
+            if lyrics_len > lyrics_end_index:
+                combined_chord_lyrics = combined_chord_lyrics + lyrics_line[lyrics_end_index: lyrics_len]
+    
+    combined_chord_lyrics.strip()
+
+    return combined_chord_lyrics
+
+
+def get_next_line_index(index_after, processed_lines, line_state):
+
+    #TODO:Validate input parameters
+    
+    if line_state not in LINE_STATE:
+        print("Invalid line State supplied")
+        return
+
+
+    for index, info in enumerate(processed_lines):
+        if index >= index_after:
+            if line_state == LINE_STATE['ANY']:
+                return info, index + 1
+            elif info[1] == line_state:
+                return info, index + 1
+        

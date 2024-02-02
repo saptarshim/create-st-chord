@@ -31,5 +31,6 @@ LINE_STATE = {
         'LYRIC'     : 2,
         'BLANK'     : 3,
         'COMMENT'   : 4,
-        'EXIT'      : 5 
+        'EXIT'      : 5,
+        'ANY'       : 6      
          }
