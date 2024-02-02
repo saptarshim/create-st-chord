@@ -1,7 +1,28 @@
+# MIT License
+
+# Copyright (c) 2024 Saptarshi Mondal (saptarshi.mondal@gmail.com)
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+import global_def
 
 def create_chord_list(chord_line):
-    valid_chord_char = ['A', 'B', 'C', 'D', 'E', 'F', 'G', '#','b', 'm', '7','M']
-    valid_chord_modifier = ['#','b', 'm', '7','M']
 
     chord_list = [[]]
     chord_list_count = 0
@@ -53,7 +74,6 @@ def create_ST_lyrics_line_from_list(chord_list, lyrics_line):
 
 
 def check_if_this_chord_line(line):
-    valid_chord_char = ['A', 'B', 'C', 'D', 'E', 'F', 'G', '#','b', 'm', '7', 'M']
     
     valid = False
 
@@ -93,6 +113,47 @@ def create_chord_lyrics_list(processed_lines):
     return chord_and_lyric_list
 
 
+
+def get_next_line(index_after, processed_lines, line_state):
+    for index, info in enumerate(processed_lines):
+        if info[1] == line_state:
+            if index >= index_after:
+                # We found the next lyrics
+                print(index)
+                return info, index+1
+
+
+
+def chord_or_lyric_first(processed_lines):
+    chord_detected = False
+    lyrics_detected = False
+    chord_first = True
+
+    # Find out the structure of the input, Does it start with Chord or Lyrics 
+
+    for info in processed_lines:
+        if info[1] == LINE_STATE['BLANK'] or info[1] == LINE_STATE['COMMENT']:
+            #this is a blank or comment line so simply add it to the output
+            continue
+        elif info[1] == LINE_STATE['CHORD']:
+            if lyrics_detected == False:
+                chord_first = True
+            else:
+                chord_first = False
+            break         
+        elif info[1] == LINE_STATE['LYRIC']:
+            if chord_detected == False:
+                chord_first = False
+            else:
+                chord_first = True
+        break
+
+    return chord_first
+
+
+
+
+
 def get_st_chord(processed_lines):
     st_lyric_list = []
  
@@ -104,16 +165,16 @@ def get_st_chord(processed_lines):
     # Find out the structure of the input, Does it start with Chord or Lyrics 
 
     for info in processed_lines:
-        if info[1] == 'B' or info[1] == 'H':
+        if info[1] == LINE_STATE['BLANK'] or info[1] == LINE_STATE['COMMENT']:
             #this is a blank or comment line so simply add it to the output
             continue
-        elif info[1] == 'C':
+        elif info[1] == LINE_STATE['CHORD']:
             if lyrics_detected == False:
                 chord_first = True
             else:
                 chord_first = False
             break         
-        elif info[1] == 'L':
+        elif info[1] == LINE_STATE['LYRIC']:
             if chord_detected == False:
                 chord_first = False
             else:
@@ -122,34 +183,60 @@ def get_st_chord(processed_lines):
 
 
     processs_line_length = len(processed_lines)
+    already_processed_line = False
 
     for index, info in enumerate(processed_lines):
         nop_line = False
-        if info[1] == 'B' or info[1] == 'H':
-            #this is a blank or comment line so simply add it to the output
+        if info[1] == LINE_STATE['BLANK'] or info[1] == LINE_STATE['COMMENT']:
+            if already_processed_line:
+                already_processed_line = False
+                continue
+            #this is a blank or comment line so simply add it to the output if this is not already procssed
             st_chord = info[2]
             nop_line = True
-        elif info[1] == 'C':
+        elif info[1] == LINE_STATE['CHORD']:
             if chord_first:
                 chord_line = info[2]
                 #This shpould not happen but just in case
                 if index + 1 < processs_line_length:
                     next_info = processed_lines[index + 1]
-                    if next_info[1] == 'L':
+                    if next_info[1] == LINE_STATE['LYRIC']:
                         lyric_line = next_info[2]
+                    elif next_info[1] == LINE_STATE['BLANK'] or info[1] == LINE_STATE['COMMENT']:
+                        if index + 2 < processs_line_length:
+                            next_info = processed_lines[index + 2]
+                            if next_info[1] == LINE_STATE['LYRIC']:
+                                lyric_line = next_info[2]
+                                already_processed_line = True
+                            else:
+                                print("Lyrics must appeear within the two lines after the chord")
                     else:
-                        print("We have a blank line after chord line bad")
+                        #Lyrics must appeear within the two lines after the chord if not abort
+                        print("Lyrics must appeear within the two lines after the chord")
+                else:
+                    print("Lyrics Missing")
             else:
                 continue                                    
-        elif info[1] == 'L':
+        elif info[1] == LINE_STATE['LYRIC']:
             if not chord_first:
                 lyric_line = info[2]
                 #This shpould not happen but just in case
                 if index + 1 < processs_line_length:
                     next_info = processed_lines[index + 1]
-                    if next_info[1] == 'C':
+                    if next_info[1] == LINE_STATE['CHORD']:
                         chord_line = next_info[2]
+                    elif next_info[1] == LINE_STATE['BLANK'] or info[1] == LINE_STATE['COMMENT']:
+                        if index + 2 < processs_line_length:
+                            next_info = processed_lines[index + 2]
+                            if next_info[1] == LINE_STATE['CHORD']:
+                                chord_line = next_info[2]
+                                already_processed_line = True
+                            else:
+                                print("Chord must appeear within the two lines after the Lyrics")
                     else:
+                        #Lyrics must appeear within the two lines after the chord if not abort
+                        print("Chord must appeear within the two lines after the chord")
+                else:
                         print("We have a blank line after lyrics line bad")
             else:
                 continue
@@ -185,16 +272,16 @@ def preproces_each_line(lines):
         
         if len(line) == 0:
             #Check if this is a blank line
-            line_info = [i,'B','\n']
+            line_info = [i,LINE_STATE['BLANK'],'\n']
         elif line[0] == '#':
             #Check if this is a comment line
-            line_info = [i,'H',line]
+            line_info = [i,LINE_STATE['COMMENT'],line]
         elif check_if_this_chord_line(line):
             #Check if this is a chord line
-            line_info = [i,'C',line]
+            line_info = [i,LINE_STATE['CHORD'],line]
         else:
             #This must be a lyrics line
-            line_info = [i,'L',line]
+            line_info = [i,LINE_STATE['LYRIC'],line]
             
         processedlines.append(line_info)
 
@@ -223,7 +310,7 @@ def write_lines(lines):
 
         for line in lines:
             output.write(line)
-            print(line)
+            #print(line)
             output.write("\n")
 
     except FileNotFoundError:
@@ -237,10 +324,9 @@ def test_all():
     lines = get_lines()
     
     processed_lines = preproces_each_line(lines)
-
-    #chord_and_lyric_list = create_chord_lyrics_list(processed_lines)
-    
-    st_chord = get_st_chord(processed_lines)
+    #st_chord = get_st_chord(processed_lines)
+    st_chord = get_st_chord_statemachine(processed_lines)
+    print(st_chord)
     write_lines(st_chord)
     
 def test_line_char():
