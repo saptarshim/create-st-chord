@@ -111,7 +111,6 @@ def get_st_chord_statemachine(processed_lines, chord_first):
         if new_info == None and next_index == None:
             # We have reached the end of file and no more line to process
             print("Done prcessig the entire file")
-            skip_line = True            
 
         if not skip_line:
             st_lyric_list.append(st_chord)
