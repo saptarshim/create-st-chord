@@ -41,8 +41,6 @@ def get_st_chord_statemachine(processed_lines, chord_first):
         current_state = info[1] 
         exit_counter = 0
 
-        if index == 6:
-            print("Index = ", index)
 
         while current_state != LINE_STATE['EXIT'] and current_state != LINE_STATE['SKIPLINE']:
             exit_counter += 1
@@ -59,12 +57,12 @@ def get_st_chord_statemachine(processed_lines, chord_first):
                         mylist = create_chord_list(chord_line)
                         st_chord = create_ST_lyrics_line_from_list(mylist,lyric_line)
                         current_state = LINE_STATE['EXIT']
+                        new_info, next_index = get_next_line_index(index+2, processed_lines, LINE_STATE['ANY'])
                     else:
                         print("Somethinh went Wrong while fethching next line")
                 else:
                     current_state = LINE_STATE['SKIPLINE']
-
-                new_info, next_index = get_next_line_index(index+1, processed_lines, LINE_STATE['ANY'])    
+                    new_info, next_index = get_next_line_index(index+1, processed_lines, LINE_STATE['ANY'])    
                 
                 
             elif current_state == LINE_STATE['LYRIC']:
@@ -76,12 +74,12 @@ def get_st_chord_statemachine(processed_lines, chord_first):
                         mylist = create_chord_list(chord_line)
                         st_chord = create_ST_lyrics_line_from_list(mylist,lyric_line)
                         current_state = LINE_STATE['EXIT']
+                        new_info, next_index = get_next_line_index(index+2, processed_lines, LINE_STATE['ANY'])
                     else:
                         print("Somethinh went Wrong while fethching next line")
                 else:
                     current_state = LINE_STATE['SKIPLINE']
-                
-                new_info, next_index = get_next_line_index(index+1, processed_lines, LINE_STATE['ANY'])
+                    new_info, next_index = get_next_line_index(index+1, processed_lines, LINE_STATE['ANY'])
                     
 
             elif current_state == LINE_STATE['BLANK']:
@@ -103,7 +101,8 @@ def get_st_chord_statemachine(processed_lines, chord_first):
             elif current_state == LINE_STATE['EXIT']:
                 break
         
-        st_lyric_list.append(st_chord)
+        if current_state != LINE_STATE['SKIPLINE']:
+            st_lyric_list.append(st_chord)
     print("Exiting State Machine")
     return st_lyric_list
 
