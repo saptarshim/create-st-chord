@@ -32,5 +32,6 @@ LINE_STATE = {
         'BLANK'     : 3,
         'COMMENT'   : 4,
         'EXIT'      : 5,
-        'ANY'       : 6      
+        'ANY'       : 6,
+        'SKIPLINE'  : 7         
          }

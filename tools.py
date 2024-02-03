@@ -155,8 +155,6 @@ def preproces_each_line(lines):
     processedlines = processedlines[1:]
     return processedlines    
 
-
-
 def create_chord_list(chord_line):
 
     chord_list = [[]]
@@ -217,16 +215,16 @@ def get_next_line_index(index_after, processed_lines, line_state):
         print("Invalid line State supplied")
         return
 
-
     for index, info in enumerate(processed_lines):
         if index >= index_after:
             if line_state == LINE_STATE['ANY']:
-                return info, index + 1
+                return info, index
             elif info[1] == line_state:
-                return info, index + 1
+                return info, index
     
     # This will only hapne if a valid next line index can't be found in the above for loop
     # Calling function must explicity check the is None for invalid return
+    print("Returning None from get_next_line_index")
     return None, None
 
 

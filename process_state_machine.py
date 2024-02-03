@@ -39,9 +39,16 @@ def get_st_chord_statemachine(processed_lines, chord_first):
             continue
 
         current_state = info[1] 
+        exit_counter = 0
 
-        while current_state != LINE_STATE['EXIT']:
-            
+        if index == 6:
+            print("Index = ", index)
+
+        while current_state != LINE_STATE['EXIT'] and current_state != LINE_STATE['SKIPLINE']:
+            exit_counter += 1
+            if exit_counter == 7:
+                print("Inifite loop detector")
+
             if current_state == LINE_STATE['CHORD']:
                 chord_line = info[2]
                 if chord_first == True:
@@ -51,10 +58,14 @@ def get_st_chord_statemachine(processed_lines, chord_first):
                         lyric_line = lyric_info[2]
                         mylist = create_chord_list(chord_line)
                         st_chord = create_ST_lyrics_line_from_list(mylist,lyric_line)
+                        current_state = LINE_STATE['EXIT']
                     else:
                         print("Somethinh went Wrong while fethching next line")
-                    
-                    current_state = LINE_STATE['EXIT']
+                else:
+                    current_state = LINE_STATE['SKIPLINE']
+
+                new_info, next_index = get_next_line_index(index+1, processed_lines, LINE_STATE['ANY'])    
+                
                 
             elif current_state == LINE_STATE['LYRIC']:
                 lyric_line = info[2]
@@ -64,26 +75,36 @@ def get_st_chord_statemachine(processed_lines, chord_first):
                         chord_info = lyric_info[2]
                         mylist = create_chord_list(chord_line)
                         st_chord = create_ST_lyrics_line_from_list(mylist,lyric_line)
+                        current_state = LINE_STATE['EXIT']
                     else:
                         print("Somethinh went Wrong while fethching next line")
-                        
-                    current_state = LINE_STATE['EXIT']
+                else:
+                    current_state = LINE_STATE['SKIPLINE']
                 
+                new_info, next_index = get_next_line_index(index+1, processed_lines, LINE_STATE['ANY'])
+                    
+
             elif current_state == LINE_STATE['BLANK']:
                 st_chord = '\n'
-                current_state = LINE_STATE['EXIT']
                 new_info, next_index = get_next_line_index(index+1, processed_lines, LINE_STATE['ANY'])
+                if new_info == None or next_index == None:
+                     print("Somethinh went Wrong while fethching next line")
+                
+                current_state = LINE_STATE['EXIT']
     
             elif current_state == LINE_STATE['COMMENT']:
                 st_chord = info[2]
-                current_state = LINE_STATE['EXIT']
                 new_info, next_index = get_next_line_index(index+1, processed_lines, LINE_STATE['ANY'])
+                if new_info == None or next_index == None:
+                     print("Somethinh went Wrong while fethching next line")
+                
+                current_state = LINE_STATE['EXIT']
 
             elif current_state == LINE_STATE['EXIT']:
                 break
         
         st_lyric_list.append(st_chord)
-
+    print("Exiting State Machine")
     return st_lyric_list
 
 def test_get_next_line_index():
