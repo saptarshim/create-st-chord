@@ -60,6 +60,7 @@ def get_st_chord_statemachine(processed_lines, chord_first):
                         st_chord = create_ST_lyrics_line_from_list(mylist,lyric_line)
                         current_state = LINE_STATE['EXIT']
                         new_info, next_index = get_next_line_index(next_index + 1, processed_lines, LINE_STATE['ANY'])
+                            
                     else:
                         print("Somethinh went Wrong while fethching next line")
                 else:
@@ -107,7 +108,12 @@ def get_st_chord_statemachine(processed_lines, chord_first):
             elif current_state == LINE_STATE['EXIT']:
                 break
         
-        if  not skip_line:
+        if new_info == None and next_index == None:
+            # We have reached the end of file and no more line to process
+            print("Done prcessig the entire file")
+            skip_line = True            
+
+        if not skip_line:
             st_lyric_list.append(st_chord)
     
     print("Exiting State Machine")

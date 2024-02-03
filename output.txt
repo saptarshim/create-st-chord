@@ -1,5 +1,9 @@
-[D]Shei je holud [F#m]pakhi bose [Em]jamrul gacher [D]dale
+#Song Name: Holud pakhi
+#Scale: D
+#Tempo: 85
 
+[D]Shei je holud [F#m]pakhi bose [Em]jamrul gacher [D]dale
+# this is a weired comment
 [D]Korto daka[F#m]daki amar   [Em]soisober  [D] shokale
 [G]Ek din gelo ure
 [G]Janina kon sudure
@@ -15,10 +19,3 @@
 [D]Dur seema[F#m]nar    [Em]Haatchhani[D] roj roj
 [G]Harano se sonali  din
 [G]Sobuj ichchha, swapno rongin.
-[D]Firbe na seki [G]firbe na .. [A]Firbe na aar kono din
-
-
-#Song Name: Holud pakhi
-#Scale: D
-#Tempo: 85
-

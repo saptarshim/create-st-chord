@@ -1,7 +1,11 @@
+#Song Name: Holud pakhi
+#Scale: D
+#Tempo: 85
+
 D             F#m        Em            D    A
 
 Shei je holud pakhi bose jamrul gacher dale
-
+# this is a weired comment
 D         F#m         Em        D    A
 Korto dakadaki amar   soisober   shokale
 G        A
@@ -36,9 +40,3 @@ G              A
 Sobuj ichchha, swapno rongin.
 D             G           A            D
 Firbe na seki firbe na .. Firbe na aar kono din
-
-
-#Song Name: Holud pakhi
-#Scale: D
-#Tempo: 85
-
