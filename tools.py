@@ -91,8 +91,6 @@ def write_lines(lines, output_file_txt):
 
         for line in lines:
             output.write(line)
-            #print(line)
-            output.write("\n")
 
     except FileNotFoundError:
         print("Error: Output file not found.")
@@ -154,6 +152,18 @@ def preproces_each_line(lines):
     # Remove the first empty list item, This is doesn't hapen if it's a simple list
     processedlines = processedlines[1:]
     return processedlines    
+
+def postproces_each_line(lines):
+    # Here we got a list with each line as an 
+    processed_st_chord = []
+    for line in lines:
+        if line != "\n":
+            line = line + "\n"
+
+        processed_st_chord.append(line)
+    
+    return processed_st_chord
+
 
 def create_chord_list(chord_line):
 
