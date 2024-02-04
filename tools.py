@@ -102,14 +102,17 @@ def check_if_this_chord_line(line):
     
     valid = False
 
-    for index, char in enumerate(line):
+    for char in line:
         #print("Index=", index)
         if char == ' ':
             continue
 
         if (char in VALID_CHORD_CHAR) or (char in VALID_CHORD_MODIFIER):
             valid = True
-        else:
+        elif char == "\n":
+            if valid:
+                valid = True
+        else:    
             valid = False
             break
 
@@ -132,8 +135,8 @@ def preproces_each_line(lines):
     length = len(lines)
 
     for i in range (0, length, 1):
-        line = lines[i].strip()
-        
+        #line = lines[i].strip(); If you do this the leading blank will be deleted from chord line
+        line = lines[i]
         if len(line) == 0:
             #Check if this is a blank line
             line_info = [i,LINE_STATE['BLANK'],'\n']
@@ -196,41 +199,37 @@ def create_ST_lyrics_line_from_list(chord_list, lyrics_line):
     combined_chord_lyrics = ''
     lyrics_start_index = 0
 
-    length = len(chord_list)
-
-    #If there is only on chord in the line we do special treatment
-
-    if length == 1:
-        thisChord = chord_list[0]
-        chord_val = thisChord[1]
-        lyrics_start_index = thisChord[0]
-        line_to_add = lyrics_line[lyrics_start_index:]
-        combined_chord_lyrics = "[" + chord_val + "]"+ line_to_add
-        #After the last chord add the reaming lyrins at the end of the line 
-        # if i == (length - 1):
-        #     #This is the last iteration
-        #     lyrics_len = len(lyrics_line)
-        #     if lyrics_len > lyrics_end_index:
-        #         combined_chord_lyrics = combined_chord_lyrics + lyrics_line[lyrics_end_index: lyrics_len]
+    thisChord = chord_list[0]
     
-    else:    
-        length = len(chord_list) - 1
-
-        for i in range(length):
+    if thisChord[0] > 0:
+        #this chord didn't start at the beging of the line
+        lyrics_end_index = thisChord[0]
+        combined_chord_lyrics = lyrics_line[0: lyrics_end_index]
+    
+    length = len(chord_list)
+    
+    if length == 1:
+        chord_val = thisChord[1]
+        line_to_add = lyrics_line[lyrics_end_index:]
+        combined_chord_lyrics =  combined_chord_lyrics + "[" + chord_val + "]"+ line_to_add
+        print(combined_chord_lyrics)
+    else:
+        for i in range(length):  #(length - 1)
             thisChord = chord_list[i]
-            nextChord = chord_list[i+1]
-            chord_val = thisChord[1]
-            lyrics_start_index = thisChord[0]
-            lyrics_end_index = nextChord[0]
-            line_to_add = lyrics_line[lyrics_start_index:lyrics_end_index]
-            combined_chord_lyrics = combined_chord_lyrics + "[" + chord_val + "]"+ line_to_add
             #After the last chord add the reaming lyrins at the end of the line 
             if i == (length - 1):
                 #This is the last iteration
                 lyrics_len = len(lyrics_line)
                 if lyrics_len > lyrics_end_index:
                     combined_chord_lyrics = combined_chord_lyrics + lyrics_line[lyrics_end_index: lyrics_len]
-        
+            else:
+                nextChord = chord_list[i+1] # Do you need to check if this is out of bound 
+                chord_val = thisChord[1]
+                lyrics_start_index = thisChord[0]
+                lyrics_end_index = nextChord[0]
+                line_to_add = lyrics_line[lyrics_start_index:lyrics_end_index]
+                combined_chord_lyrics = combined_chord_lyrics + "[" + chord_val + "]"+ line_to_add
+                
     combined_chord_lyrics.strip()
 
     return combined_chord_lyrics

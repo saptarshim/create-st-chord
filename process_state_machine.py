@@ -46,8 +46,9 @@ def get_st_chord_statemachine(processed_lines, chord_first):
 
         while current_state != LINE_STATE['EXIT']:
             exit_counter += 1
-            if exit_counter == 7:
+            if exit_counter == 100:
                 print("Inifite loop detector")
+                break
 
             if current_state == LINE_STATE['CHORD']:
                 if chord_first == True:
