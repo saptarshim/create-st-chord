@@ -196,22 +196,41 @@ def create_ST_lyrics_line_from_list(chord_list, lyrics_line):
     combined_chord_lyrics = ''
     lyrics_start_index = 0
 
-    length = len(chord_list) - 1
-    for i in range(length):
-        thisChord = chord_list[i]
-        nextChord = chord_list[i+1]
+    length = len(chord_list)
+
+    #If there is only on chord in the line we do special treatment
+
+    if length == 1:
+        thisChord = chord_list[0]
         chord_val = thisChord[1]
         lyrics_start_index = thisChord[0]
-        lyrics_end_index = nextChord[0]
-        line_to_add = lyrics_line[lyrics_start_index:lyrics_end_index]
-        combined_chord_lyrics = combined_chord_lyrics + "[" + chord_val + "]"+ line_to_add
+        line_to_add = lyrics_line[lyrics_start_index:]
+        combined_chord_lyrics = "[" + chord_val + "]"+ line_to_add
         #After the last chord add the reaming lyrins at the end of the line 
-        if i == (length - 1):
-            #This is the last iteration
-            lyrics_len = len(lyrics_line)
-            if lyrics_len > lyrics_end_index:
-                combined_chord_lyrics = combined_chord_lyrics + lyrics_line[lyrics_end_index: lyrics_len]
+        # if i == (length - 1):
+        #     #This is the last iteration
+        #     lyrics_len = len(lyrics_line)
+        #     if lyrics_len > lyrics_end_index:
+        #         combined_chord_lyrics = combined_chord_lyrics + lyrics_line[lyrics_end_index: lyrics_len]
     
+    else:    
+        length = len(chord_list) - 1
+
+        for i in range(length):
+            thisChord = chord_list[i]
+            nextChord = chord_list[i+1]
+            chord_val = thisChord[1]
+            lyrics_start_index = thisChord[0]
+            lyrics_end_index = nextChord[0]
+            line_to_add = lyrics_line[lyrics_start_index:lyrics_end_index]
+            combined_chord_lyrics = combined_chord_lyrics + "[" + chord_val + "]"+ line_to_add
+            #After the last chord add the reaming lyrins at the end of the line 
+            if i == (length - 1):
+                #This is the last iteration
+                lyrics_len = len(lyrics_line)
+                if lyrics_len > lyrics_end_index:
+                    combined_chord_lyrics = combined_chord_lyrics + lyrics_line[lyrics_end_index: lyrics_len]
+        
     combined_chord_lyrics.strip()
 
     return combined_chord_lyrics
