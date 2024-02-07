@@ -137,7 +137,8 @@ def preproces_each_line(lines):
     for i in range (0, length, 1):
         #line = lines[i].strip(); If you do this the leading blank will be deleted from chord line
         line = lines[i]
-        line = line.rstrip("\n") # Remove any new line character at the end of the line
+        if line != '\n': #If this is not a blank line then remove the \n
+            line = line.rstrip("\n") # Remove any new line character at the end of the line
         if len(line) == 0 or line == '\n':
             #Check if this is a blank line
             line_info = [i,LINE_STATE['BLANK'],'\n']

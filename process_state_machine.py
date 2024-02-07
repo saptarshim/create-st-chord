@@ -66,7 +66,7 @@ def get_st_chord_statemachine(processed_lines, chord_first):
                         new_info, next_index = get_next_line_index(next_index + 1, processed_lines, LINE_STATE['ANY'])
                             
                     else:
-                        print("Somethinh went Wrong while fethching next line")
+                        print("Index = ", index, "  CHORD:Somethinh went Wrong while fethching next line")
                 else:
                     current_state = LINE_STATE['SKIPLINE']
                     new_info, next_index = get_next_line_index(index + 1, processed_lines, LINE_STATE['ANY'])    
@@ -83,7 +83,7 @@ def get_st_chord_statemachine(processed_lines, chord_first):
                         current_state = LINE_STATE['EXIT']
                         new_info, next_index = get_next_line_index(next_index + 1, processed_lines, LINE_STATE['ANY'])
                     else:
-                        print("Somethinh went Wrong while fethching next line")
+                        print("Index = ", index, "  LYRIC:Somethinh went Wrong while fethching next line")
                 else:
                     current_state = LINE_STATE['SKIPLINE']
                     new_info, next_index = get_next_line_index(index + 1, processed_lines, LINE_STATE['ANY'])
@@ -93,7 +93,7 @@ def get_st_chord_statemachine(processed_lines, chord_first):
                 st_chord = '\n'
                 new_info, next_index = get_next_line_index(index + 1, processed_lines, LINE_STATE['ANY'])
                 if new_info == None or next_index == None:
-                     print("Somethinh went Wrong while fethching next line")
+                     print("Index = ", index, "  BLANK:Somethinh went Wrong while fethching next line")
                 
                 current_state = LINE_STATE['EXIT']
     
@@ -101,7 +101,7 @@ def get_st_chord_statemachine(processed_lines, chord_first):
                 st_chord = info[2]
                 new_info, next_index = get_next_line_index(index + 1, processed_lines, LINE_STATE['ANY'])
                 if new_info == None or next_index == None:
-                     print("Somethinh went Wrong while fethching next line")
+                     print("Index = ", index, "  COMMENT: Somethinh went Wrong while fethching next line")
                 
                 current_state = LINE_STATE['EXIT']
             elif current_state == LINE_STATE['SKIPLINE']:
