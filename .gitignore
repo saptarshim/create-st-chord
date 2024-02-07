@@ -163,5 +163,9 @@ cython_debug/
 quicktry.py
 
 *.txt
+*.flac
+*.mp3
+*.wav
+*.ipynb
 
 

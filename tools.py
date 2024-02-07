@@ -137,7 +137,8 @@ def preproces_each_line(lines):
     for i in range (0, length, 1):
         #line = lines[i].strip(); If you do this the leading blank will be deleted from chord line
         line = lines[i]
-        if len(line) == 0:
+        line = line.rstrip("\n") # Remove any new line character at the end of the line
+        if len(line) == 0 or line == '\n':
             #Check if this is a blank line
             line_info = [i,LINE_STATE['BLANK'],'\n']
         elif line[0] == '#':
@@ -200,10 +201,10 @@ def create_ST_lyrics_line_from_list(chord_list, lyrics_line):
     lyrics_start_index = 0
 
     thisChord = chord_list[0]
+    lyrics_end_index = thisChord[0]
     
     if thisChord[0] > 0:
         #this chord didn't start at the beging of the line
-        lyrics_end_index = thisChord[0]
         combined_chord_lyrics = lyrics_line[0: lyrics_end_index]
     
     length = len(chord_list)
@@ -221,7 +222,9 @@ def create_ST_lyrics_line_from_list(chord_list, lyrics_line):
                 #This is the last iteration
                 lyrics_len = len(lyrics_line)
                 if lyrics_len > lyrics_end_index:
-                    combined_chord_lyrics = combined_chord_lyrics + lyrics_line[lyrics_end_index: lyrics_len]
+                    chord_val = thisChord[1]
+                    line_to_add = lyrics_line[lyrics_end_index: lyrics_len]
+                    combined_chord_lyrics = combined_chord_lyrics + "[" + chord_val + "]"+ line_to_add
             else:
                 nextChord = chord_list[i+1] # Do you need to check if this is out of bound 
                 chord_val = thisChord[1]

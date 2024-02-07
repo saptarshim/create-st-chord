@@ -50,6 +50,9 @@ def get_st_chord_statemachine(processed_lines, chord_first):
                 print("Inifite loop detector")
                 break
 
+            lyric_info = None 
+            next_index = None    
+            chord_info = None
             if current_state == LINE_STATE['CHORD']:
                 if chord_first == True:
                     chord_line = info[2]
@@ -73,8 +76,8 @@ def get_st_chord_statemachine(processed_lines, chord_first):
                 if chord_first == False:
                     lyric_line = info[2]
                     chord_info, next_index = get_next_line_index(index + 1, processed_lines, LINE_STATE['CHORD'])
-                    if lyric_info != None or next_index != None:
-                        chord_info = lyric_info[2]
+                    if chord_info != None or next_index != None:
+                        chord_line = chord_info[2]
                         mylist = create_chord_list(chord_line)
                         st_chord = create_ST_lyrics_line_from_list(mylist,lyric_line)
                         current_state = LINE_STATE['EXIT']
