@@ -167,5 +167,8 @@ quicktry.py
 *.mp3
 *.wav
 *.ipynb
+*.txt
+.vscode/
+*.jpeg
 
 
