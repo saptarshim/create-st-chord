@@ -135,9 +135,7 @@ def test_get_next_line_index():
         print("Index = ", next_index, "\n", new_info)
 
     
-def test():
-    input_file = 'input.txt'
-    output_file = 'output.txt' 
+def main(input_file, output_file):
     
     lines = get_lines(input_file)
     
@@ -149,5 +147,6 @@ def test():
 
     write_lines(st_chord, output_file)
 
-test()
-#test_get_next_line_index()
+#input_file = 'input.txt'
+#output_file = 'output.txt' 
+#main(input_file, output_file)

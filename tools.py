@@ -139,7 +139,7 @@ def preproces_each_line(lines):
         line = lines[i]
         if line != '\n': #If this is not a blank line then remove the \n
             line = line.rstrip("\n") # Remove any new line character at the end of the line
-        if len(line) == 0 or line == '\n':
+        if len(line.strip()) == 0 or line == '\n':
             #Check if this is a blank line
             line_info = [i,LINE_STATE['BLANK'],'\n']
         elif line[0] == '#':
