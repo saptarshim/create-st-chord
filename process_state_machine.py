@@ -138,6 +138,11 @@ def test_get_next_line_index():
 def main(input_file, output_file):
     
     lines = get_lines(input_file)
+
+    #Make sure we got data toprocess
+    if lines == None:
+        print("Input Error")
+        return
     
     processed_lines = preproces_each_line(lines)
     chord_first = chord_or_lyric_first(processed_lines)

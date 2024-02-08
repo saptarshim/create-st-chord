@@ -72,6 +72,7 @@ def chord_or_lyric_first(processed_lines):
 
 def get_lines(input_file_txt):
     input_file = input_file_txt
+    lines = None
     try:
         # Read text from the input file
         with open(input_file, 'r') as file:
