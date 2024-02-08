@@ -93,7 +93,8 @@ def get_st_chord_statemachine(processed_lines, chord_first):
                 st_chord = '\n'
                 new_info, next_index = get_next_line_index(index + 1, processed_lines, LINE_STATE['ANY'])
                 if new_info == None or next_index == None:
-                     print("Index = ", index, "  BLANK:Somethinh went Wrong while fethching next line")
+                     #print("Index = ", index, "  BLANK:Somethinh went Wrong while fethching next line")
+                     print("End of File Reached")
                 
                 current_state = LINE_STATE['EXIT']
     

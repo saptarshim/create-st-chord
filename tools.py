@@ -258,4 +258,5 @@ def get_next_line_index(index_after, processed_lines, line_state):
     # This will only hapne if a valid next line index can't be found in the above for loop
     # Calling function must explicity check the is None for invalid return
     #print("Returning None from get_next_line_index")
+    # This basically means the file doesn't have any more lines to process.
     return None, None
