@@ -152,7 +152,3 @@ def main(input_file, output_file):
     st_chord = postproces_each_line(st_chord)
 
     write_lines(st_chord, output_file)
-
-#input_file = 'input.txt'
-#output_file = 'output.txt' 
-#main(input_file, output_file)
