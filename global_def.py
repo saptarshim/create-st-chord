@@ -23,7 +23,7 @@
 
 
 VALID_CHORD_CHAR = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-VALID_CHORD_MODIFIER = ['#','b', 'm', '7','M','s','u','s','4','1','1']
+VALID_CHORD_MODIFIER = ['#','b', 'm', '7','M','s','u','s','4','7','5','11','m','a','j']
 
 LINE_STATE = {
         'INIT'      : 0,
