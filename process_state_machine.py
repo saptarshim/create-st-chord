@@ -28,9 +28,16 @@ from tools import get_next_line_index, preproces_each_line, postproces_each_line
 
 
 def get_chord_lyric(chord_first, current_state, info, index, processed_lines):
-    line1 = info[2]
-    next_info, next_index = get_next_line_index(index + 1, processed_lines, LINE_STATE['LYRIC'])
+    
+    if chord_first:
+        next_info, next_index = get_next_line_index(index + 1, processed_lines, LINE_STATE['LYRIC'])
+    else:
+        next_info, next_index = get_next_line_index(index + 1, processed_lines, LINE_STATE['CHORD'])
+
     index_after = next_index + 1 
+    
+    line1 = info[2]
+    
     if next_info != None or next_index != None:
         line2 = next_info[2]
         if chord_first:
