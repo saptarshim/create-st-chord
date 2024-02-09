@@ -71,22 +71,14 @@ def get_st_chord_statemachine(processed_lines, chord_first):
     next_index = 0
 
     for index, info in enumerate(processed_lines):
-
         skip_line = False
 
         if index != next_index:
             continue
 
         current_state = info[1] 
-        exit_counter = 0
-
-
         while current_state != LINE_STATE['EXIT']:
-            exit_counter += 1
-            if exit_counter == 100:
-                print("Inifite loop detector")
-                break
-
+            
             lyric_info = None 
             next_index = None    
             chord_info = None
@@ -127,7 +119,7 @@ def get_st_chord_statemachine(processed_lines, chord_first):
         if not skip_line:
             st_lyric_list.append(st_chord)
     
-    print("Exiting State Machine")
+    #print("Exiting State Machine")
     return st_lyric_list
 
 def test_get_next_line_index():
