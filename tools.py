@@ -161,14 +161,19 @@ def preproces_each_line(lines):
 
 def postproces_each_line(lines):
     # Here we got a list with each line as an 
-    processed_st_chord = []
-    for line in lines:
-        if line != "\n":
-            line = line + "\n"
+    # processed_st_chord = []
+    # for line in lines:
+    #     if line != "\n":
+    #         line = line + "\n"
 
-        processed_st_chord.append(line)
+    #     processed_st_chord.append(line)
+
+    # return processed_st_chord
+
+    #TODO: Implement this with list comprehension
+    return  [line + '\n' if line != '\n' else line for line in lines ]    
     
-    return processed_st_chord
+    
 
 
 def create_chord_list(chord_line):
