@@ -64,6 +64,49 @@ def get_chord_lyric(chord_first, current_state, info, index, processed_lines):
     return new_info, next_index, current_state, st_chord    
 
 
+def process_blank(chord_first, current_state, info, index, processed_lines):
+
+    st_chord = '\n'
+    new_info, next_index = get_next_line_index(index + 1, processed_lines, LINE_STATE['ANY'])
+    if new_info == None or next_index == None:
+            #print("Index = ", index, "  BLANK:Somethinh went Wrong while fethching next line")
+            print("End of File Reached")
+    
+    current_state = LINE_STATE['EXIT']
+
+    return new_info, next_index, current_state, st_chord  
+
+
+def process_comment(chord_first, current_state, info, index, processed_lines):
+
+    st_chord = info[2]
+    new_info, next_index = get_next_line_index(index + 1, processed_lines, LINE_STATE['ANY'])
+    if new_info == None or next_index == None:
+            print("Index = ", index, "  COMMENT: Somethinh went Wrong while fethching next line")
+    
+    current_state = LINE_STATE['EXIT']
+
+    return new_info, next_index, current_state, st_chord  
+
+def process_skipline(chord_first, current_state, info, index, processed_lines):
+
+    current_state = LINE_STATE['EXIT']
+    new_info, next_index = get_next_line_index(index + 1, processed_lines, LINE_STATE['ANY'])
+    st_chord = None # In this case we donlt need any st_chord
+
+    return new_info, next_index, current_state, st_chord  
+
+
+state_machine_process_func = {
+    LINE_STATE['CHORD']: get_chord_lyric,
+    LINE_STATE['LYRIC']: get_chord_lyric,
+    LINE_STATE['BLANK']: process_blank,
+    LINE_STATE['COMMENT']:process_comment,
+    LINE_STATE['SKIPLINE']: process_skipline
+}
+
+
+
 def get_st_chord_statemachine(processed_lines, chord_first):
     
     st_lyric_list = []
@@ -82,35 +125,18 @@ def get_st_chord_statemachine(processed_lines, chord_first):
             lyric_info = None 
             next_index = None    
             chord_info = None
-            if current_state == LINE_STATE['CHORD'] or current_state == LINE_STATE['LYRIC']:
-                new_info, next_index, current_state, st_chord = get_chord_lyric(chord_first, 
+
+            if current_state == LINE_STATE['SKIPLINE']:
+                skip_line = True
+            elif current_state == LINE_STATE['EXIT']:
+                break
+
+            new_info, next_index, current_state, st_chord = state_machine_process_func[current_state](
+                                                                                chord_first, 
                                                                                 current_state, 
                                                                                 info, 
                                                                                 index, 
                                                                                 processed_lines)
-            elif current_state == LINE_STATE['BLANK']:
-                st_chord = '\n'
-                new_info, next_index = get_next_line_index(index + 1, processed_lines, LINE_STATE['ANY'])
-                if new_info == None or next_index == None:
-                     #print("Index = ", index, "  BLANK:Somethinh went Wrong while fethching next line")
-                     print("End of File Reached")
-                
-                current_state = LINE_STATE['EXIT']
-    
-            elif current_state == LINE_STATE['COMMENT']:
-                st_chord = info[2]
-                new_info, next_index = get_next_line_index(index + 1, processed_lines, LINE_STATE['ANY'])
-                if new_info == None or next_index == None:
-                     print("Index = ", index, "  COMMENT: Somethinh went Wrong while fethching next line")
-                
-                current_state = LINE_STATE['EXIT']
-            elif current_state == LINE_STATE['SKIPLINE']:
-                current_state = LINE_STATE['EXIT']
-                new_info, next_index = get_next_line_index(index + 1, processed_lines, LINE_STATE['ANY'])
-                skip_line = True    
-
-            elif current_state == LINE_STATE['EXIT']:
-                break
         
         if new_info == None and next_index == None:
             # We have reached the end of file and no more line to process
@@ -118,8 +144,7 @@ def get_st_chord_statemachine(processed_lines, chord_first):
 
         if not skip_line:
             st_lyric_list.append(st_chord)
-    
-    #print("Exiting State Machine")
+  
     return st_lyric_list
 
 def test_get_next_line_index():
