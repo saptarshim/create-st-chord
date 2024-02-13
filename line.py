@@ -343,17 +343,16 @@ class STChordApp:
     def get_line_from_st_obj(self):
 
         for st in self._st_chord_list:
-            line = st.get_line()
+            line = st.linestring
             self._output_lines.append(line)
 
-    
     def write_lines(self):
-        output_file = self._output_file_txt
-        lines = self.get_line_from_st_obj()
+        output_file = self._outputfile
+        self.get_line_from_st_obj()
         try:
             output = open(output_file, 'w')
 
-            for line in lines:
+            for line in self._output_lines:
                 output.write(line)
 
         except FileNotFoundError:
