@@ -30,7 +30,6 @@ from tools import get_next_line_index, preproces_each_line, postproces_each_line
 
 class Line:
     def __init__(self, lineno, linestring):
-        print("Constructor for Line Called")
         self._lineno = lineno
         self._linestring = linestring
         
@@ -57,7 +56,6 @@ class Line:
 
 class Chord(Line):
     def __init__(self, lineno, linestring):
-        print("Constructor for Chord Called")
         super().__init__(lineno, linestring)  # Call the parent class constructor
         self._chord_list = [[]]
         self.proccess()
@@ -103,7 +101,7 @@ class Chord(Line):
 class Lyric(Line):
     def __init__(self, lineno, linestring):
         super().__init__(lineno, linestring)  # Call the parent class constructor
-        print("Constructor for Lyric Called")
+        
 
     def proccess(self):
         print("This is a method from Lyric")
@@ -128,7 +126,6 @@ class Blank(Line):
 class ST_CHORD (Line):
     def __init__(self, chord, lyric):
             
-        print("Constructor for ST_CHORD Called")
         self._chord = chord   #Instance of a Chord class
         self._lyric = lyric   #Instance of a Lyric class
         self.combined_chord_lyrics = ''
@@ -205,7 +202,6 @@ class ST_CHORD (Line):
 class STChordApp:
     def __init__(self, input_file, output_file):
             
-        print("Constructor for STChordApp Called")
         self._inputfile = input_file   #Instance of a Chord class
         self._outputfile = output_file   #Instance of a Lyric class
         self._line_obj_list = []
