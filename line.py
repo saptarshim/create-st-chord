@@ -71,7 +71,6 @@ class Chord(Line):
 
         
     def proccess(self):
-        print("This is a method from process")
         chord_list_count = 0
         #chord_line = super().linestring
         chord_line = self.linestring
@@ -340,6 +339,8 @@ class STChordApp:
 
         for st in self._st_chord_list:
             line = st.linestring
+            if line != '\n':
+               line = line + '\n'
             self._output_lines.append(line)
 
     def write_lines(self):
