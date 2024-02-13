@@ -110,7 +110,6 @@ state_machine_process_func = {
 def get_st_chord_statemachine(processed_lines, chord_first):
     
     st_lyric_list = []
-
     next_index = 0
 
     for index, info in enumerate(processed_lines):
