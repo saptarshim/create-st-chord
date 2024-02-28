@@ -296,6 +296,8 @@ class STChordApp:
     def validate(self):
         if self._lines == None:
             print("Input Error")
+        
+        #Check if we have all the paired Chord and lyrics line
         return False
 
     def create_line_obj(self):
