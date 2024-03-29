@@ -25,8 +25,10 @@ import argparse
 import sys
 #from process_state_machine import main
 import process_state_machine as sm
+import line as l
 
-def main():
+
+def main(old):
     if len(sys.argv) < 2:
         # Default value if no argument is provided
         input_file = 'input.txt'
@@ -47,10 +49,16 @@ def main():
         input_file = args.arg1
         output_file = args.arg2
     
-    sm.main(input_file, output_file)
+    if old:
+        sm.main(input_file, output_file)
+    else:
+        l.STChordApp(input_file, output_file)
+
 
 if __name__ == "__main__":
     # Entry point of the script
     #import pdb; 
     #pdb.set_trace()  # Set breakpoint
-    main()
+    main(False)
+    
+    

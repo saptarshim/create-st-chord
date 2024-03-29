@@ -82,7 +82,7 @@ def process_comment(chord_first, current_state, info, index, processed_lines):
     st_chord = info[2]
     new_info, next_index = get_next_line_index(index + 1, processed_lines, LINE_STATE['ANY'])
     if new_info == None or next_index == None:
-            print("Index = ", index, "  COMMENT: Somethinh went Wrong while fethching next line")
+            print("Index = ", index, "  COMMENT: Something went Wrong while fetching next line")
     
     current_state = LINE_STATE['EXIT']
 
@@ -92,7 +92,7 @@ def process_skipline(chord_first, current_state, info, index, processed_lines):
 
     current_state = LINE_STATE['EXIT']
     new_info, next_index = get_next_line_index(index + 1, processed_lines, LINE_STATE['ANY'])
-    st_chord = None # In this case we donlt need any st_chord
+    st_chord = None # In this case we don't need any st_chord
 
     return new_info, next_index, current_state, st_chord  
 
